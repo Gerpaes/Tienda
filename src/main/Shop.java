@@ -7,8 +7,10 @@ import model.Sale;
 import java.util.Scanner;
 import model.Amount;
 import model.Client;
+import model.Employee;
 
 public class Shop {
+
 
     private Amount cash = new Amount(100.00);
     private ArrayList<Product> inventory;
@@ -24,6 +26,27 @@ public class Shop {
         sales = new ArrayList<>();
     }
 
+    private static void initSesion() {
+        Scanner sca = new Scanner(System.in);
+        boolean logger = false;
+        while(!logger){              
+        System.out.println("El nombre del empleado");
+        String name = sca.nextLine();
+        System.out.println("Dime el id del empleado");
+        int user =sca.nextInt();
+        sca.nextLine();
+        System.out.println("Escribe la contraseña");
+        String password = sca.nextLine();
+        Employee employe = new Employee(name);
+        
+       logger = employe.login(user, password);
+       if(!logger){
+           System.out.println("El usuario o contraseña son incorrectas");
+       }
+        } 
+       System.out.println("Secion iniciada bienvenido");
+       
+    }
     public static void main(String[] args) {
 
         Shop shop = new Shop();
@@ -31,9 +54,10 @@ public class Shop {
         shop.loadInventory();
 
         Scanner scanner = new Scanner(System.in);
+        initSesion();
         int opcion = 0;
         boolean exit = false;
-
+        
         do {
             System.out.println("\n");
             System.out.println("===========================");

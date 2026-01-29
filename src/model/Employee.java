@@ -4,17 +4,18 @@
  */
 package model;
 
-import model.Person;
+import main.Logable;
+
 
 /**
  *
  * @author perut
  */
-public class Employee extends Person {
+public class Employee extends Person implements Logable{
 
-    private final int employeeld = 123;
+    private final int employeeId = 123;
 
-    private final String password = "test";
+    private final String passWord = "test";
 
     public Employee(String name) {
         super(name);
@@ -26,7 +27,7 @@ public class Employee extends Person {
      * @return the value of password
      */
     public String getPassword() {
-        return password;
+        return passWord;
     }
 
     /**
@@ -35,12 +36,28 @@ public class Employee extends Person {
      * @return the value of employeeld
      */
     public int getEmployeeld() {
-        return employeeld;
+        return employeeId;
     }
 
     @Override
     public String toString() {
-        return "Employee: " + employeeld + " password: " + password;
+        return "Employee: " + employeeId + " password: " + passWord;
+    }
+
+    @Override
+    public boolean login(int user, String password) {
+                   
+            
+        if(user != employeeId || !password.equalsIgnoreCase(passWord)){
+            
+            return false;
+            
+        }else{
+            
+            
+            return true;
+        }
+        
     }
 
 }

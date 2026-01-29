@@ -4,12 +4,12 @@
  */
 package main;
 
+import model.Amount;
+
 /**
  *
  * @author Estudio-Trabajo
  */
-public interface Logable {
-    
-    public abstract boolean login(int user, String password);
-    
+public interface Payable {
+    public abstract boolean pay(Amount balance);
 }
