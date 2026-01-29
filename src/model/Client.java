@@ -4,13 +4,14 @@
  */
 package model;
 
+import main.Payable;
 import model.Person;
 
 /**
  *
  * @author perut
  */
-public class Client extends Person {
+public class Client extends Person implements Payable{
 
     private final int memberld = 456;
 
@@ -42,5 +43,13 @@ public class Client extends Person {
     public String toString() {
         return "Client: " + memberld + ", balance: " + balance;
     }
+
+    @Override
+    public boolean pay(Amount balance) {
+     if(balance.getValue() < ){
+         return false;
+     }   
+    }
+   
 
 }
