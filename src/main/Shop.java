@@ -11,7 +11,6 @@ import model.Employee;
 
 public class Shop {
 
-
     private Amount cash = new Amount(100.00);
     private ArrayList<Product> inventory;
     private int numberProducts;
@@ -29,24 +28,25 @@ public class Shop {
     private static void initSesion() {
         Scanner sca = new Scanner(System.in);
         boolean logger = false;
-        while(!logger){              
-        System.out.println("El nombre del empleado");
-        String name = sca.nextLine();
-        System.out.println("Dime el id del empleado");
-        int user =sca.nextInt();
-        sca.nextLine();
-        System.out.println("Escribe la contraseña");
-        String password = sca.nextLine();
-        Employee employe = new Employee(name);
-        
-       logger = employe.login(user, password);
-       if(!logger){
-           System.out.println("El usuario o contraseña son incorrectas");
-       }
-        } 
-       System.out.println("Secion iniciada bienvenido");
-       
+        while (!logger) {
+            System.out.println("El nombre del empleado");
+            String name = sca.nextLine();
+            System.out.println("Dime el id del empleado");
+            int user = sca.nextInt();
+            sca.nextLine();
+            System.out.println("Escribe la contraseña");
+            String password = sca.nextLine();
+            Employee employe = new Employee(name);
+
+            logger = employe.login(user, password);
+            if (!logger) {
+                System.out.println("El usuario o contraseña son incorrectas");
+            }
+        }
+        System.out.println("Secion iniciada bienvenido");
+
     }
+
     public static void main(String[] args) {
 
         Shop shop = new Shop();
@@ -57,7 +57,7 @@ public class Shop {
         initSesion();
         int opcion = 0;
         boolean exit = false;
-        
+
         do {
             System.out.println("\n");
             System.out.println("===========================");
@@ -71,6 +71,7 @@ public class Shop {
             System.out.println("6) Venta");
             System.out.println("7) Ver ventas");
             System.out.println("8) Ver total de ventas");
+            System.out.println("9) Eliminar producto");
             System.out.println("10) Salir programa");
             System.out.print("Seleccione una opcion: ");
             opcion = scanner.nextInt();
@@ -149,8 +150,6 @@ public class Shop {
         String name = scanner.nextLine();
         Product product = findProduct(name);
         if (product == null) {
-            System.out.println("Precio de venta");
-            double publicPrice = scanner.nextDouble();
             System.out.print("Precio mayorista: ");
             double wholesalerPrice = scanner.nextDouble();
             System.out.print("Stock: ");
@@ -225,11 +224,11 @@ public class Shop {
         String client = sc.nextLine();
         System.out.println("Dime Id cliente");
         int memberid = sc.nextInt();
-        
-        Client cliente = new Client( client);
+
+        Client cliente = new Client(client);
 
         // sale product until input name is not 0
-        double totalAmount = 0.0;
+        Amount totalAmount = new Amount(0);
 
         ArrayList<Product> soldProducts = new ArrayList<>();
         int soldCount = 0;
@@ -253,7 +252,8 @@ public class Shop {
                 soldProducts.add(product);
                 soldCount++;
 
-                totalAmount += product.getPublicPrice().getValue();
+                totalAmount.setValue(
+                        totalAmount.getValue() + product.getPublicPrice().getValue());
                 product.setStock(product.getStock() - 1);
 
                 // if no more stock, set as not available to sale
@@ -270,19 +270,29 @@ public class Shop {
         }
 
         // show cost total
-        totalAmount = totalAmount * TAX_RATE;
-        cash.setValue(cash.getValue() + totalAmount);
+        totalAmount.setValue(totalAmount.getValue() * TAX_RATE);
+        cash.setValue(cash.getValue() + totalAmount.getValue());
+        totalAmountSales.setValue(
+                totalAmountSales.getValue() + totalAmount.getValue());
 
-        totalAmountSales.setValue(totalAmountSales.getValue() + totalAmount);
+        boolean paid = cliente.pay(totalAmount);
 
-        Sale sale = new Sale(new Client(client), null, new Amount(totalAmount));
+            double deuda = totalAmount.getValue() - 50.00;
+        if (!paid) {
+            System.out.println(
+                    "Saldo insuficiente. El cliente debe: "
+                    + String.format("%.2f ?", deuda)
+            );
+        }
+        
+        Sale sale = new Sale(cliente, null, totalAmount);
 
         sale.setProducts(soldProducts);
 
         sales.add(sale);
         numberSales++;
 
-        System.out.println("Venta realizada con exito, total: " + totalAmount + totalAmountSales.getCurrency());
+        System.out.println("Venta realizada con exito, total: " + totalAmount + totalAmountSales.getCurrency() + " " + deuda );
     }
 
     /**
@@ -333,7 +343,7 @@ public class Shop {
      */
     public Product findProduct(String name) {
         for (Product producto : inventory) {
-            if (inventory.contains(producto)) {
+            if (producto.getName().equalsIgnoreCase(name)) {
                 return producto;
             }
         }
@@ -353,10 +363,9 @@ public class Shop {
             inventory.remove(product);
             System.out.println("Producto eliminado correctamente");
 
-            
         } else {
             System.out.println("The product not exist");
-            
+
         }
     }
 
