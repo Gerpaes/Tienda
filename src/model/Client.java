@@ -45,11 +45,20 @@ public class Client extends Person implements Payable{
     }
 
     @Override
-    public boolean pay(Amount balance) {
-     if(balance.getValue() < ){
-         return false;
-     }   
+public boolean pay(Amount amount) {
+    double saldo = balance.getValue();
+    double total = amount.getValue();
+
+    if (saldo >= total) {
+        // puede pagar todo
+        balance.setValue(saldo - total);
+        return true;
+    } else {
+        // no puede pagar todo ? se queda a 0
+        balance.setValue(0);
+        return false;
     }
+}
    
 
 }

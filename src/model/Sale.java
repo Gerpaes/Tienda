@@ -42,7 +42,7 @@ public class Sale {
 
     @Override
     public String toString() {
-        return "Sale{" + "client=" + client + ", products=" + products + ", amount=" + amount + '}';
+        return "Sale{" + "client=" + client.getName() + ", products=" + products + ", amount=" + amount + '}';
     }
 
     

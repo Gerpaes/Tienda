@@ -11,5 +11,5 @@ import model.Amount;
  * @author Estudio-Trabajo
  */
 public interface Payable {
-    public abstract boolean pay(Amount balance);
+    public abstract boolean pay(Amount amount);
 }
