@@ -75,14 +75,31 @@ public class DAOSQL implements IDAO {
     private void createTable(Connection conn) throws SQLException {
         String query = "create table if not exists " + JDBC_DDBB + "." + JDBC_TABLE + "("
                 + "id Bigint primary key auto_increment, "
-                + "name varchar(70), "
+                + "name varchar(70) unique, "
                 + "disponible boolean, "
-                + "stock int"
+                + "stock int,"
                 + "precio double);";
         Statement stmt = null;
         stmt = conn.createStatement();
         stmt.executeUpdate(query);
-        //Liberamos los recursos de la comunicación   
+        
+        //Liberamos los recursos de la comunicación  
+//        PreparedStatement test = conn.prepareStatement(SQL_INSERT);
+//        test.setString(1, "manzana");
+//        test.setBoolean(2, true);
+//        test.setInt(3, 10);
+//        test.setDouble(4, 20.0);
+//        test.addBatch();
+//
+//        // Producto 2 (opcional, para tener m�s datos)
+//        test.setString(1, "pera");
+//        test.setBoolean(2, true);
+//        test.setInt(3, 5);
+//        test.setDouble(4, 15.5);
+//        test.addBatch();
+
+        // Ejecutamos el lote
+//        test.executeBatch();
         stmt.close();
     }
 
@@ -169,46 +186,46 @@ public class DAOSQL implements IDAO {
         return products;
     }
 
-    @Override
-    public HashMap<Integer, Product> readByDisponible(Product p) throws DAO_Excep {
-        HashMap<Integer, Product> products = new HashMap<Integer, Product>();
-        Product product = null;
-        Connection conn = null;
-        Statement instruction = null;
-        ResultSet rs = null;
-        try {
-            conn = connect();
-            String query = SQL_SELECT2 + "'" + p.isAvailable() + "'" + ");";
-            System.out.println(query);
-            instruction = conn.createStatement();
-            rs = instruction.executeQuery(query);
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                int stock = rs.getInt("stock");
-                boolean disponible = rs.getBoolean("disponible");
-                Amount precio = new Amount(rs.getDouble("precio"));
-                product = new Product(id, name, disponible, stock, precio);
-                products.put(id, product);
-            }
-        } catch (SQLException ex) {
-            //ex.printStackTrace(System.out);
-            throw new Read_SQL_DAO_Excep("Can not read from database (DAO_COntroller.DAOSQL.read)");
-        } finally {
-            try {
-                rs.close();
-                instruction.close();
-                disconnect(conn);
-            } catch (SQLException ex) {
-                //ex.printStackTrace(System.out);
-                throw new Read_SQL_DAO_Excep("Can not close database read process (DAO_COntroller.DAOSQL.read)");
-            }
-        }
-        return products;
-    }
+//    @Override
+//    public HashMap<Integer, Product> readByDisponible(Product p) throws DAO_Excep {
+//        HashMap<Integer, Product> products = new HashMap<Integer, Product>();
+//        Product product = null;
+//        Connection conn = null;
+//        Statement instruction = null;
+//        ResultSet rs = null;
+//        try {
+//            conn = connect();
+//            String query = SQL_SELECT2 + "'" + p.isAvailable() + "'" + ");";
+//            System.out.println(query);
+//            instruction = conn.createStatement();
+//            rs = instruction.executeQuery(query);
+//            while (rs.next()) {
+//                int id = rs.getInt("id");
+//                String name = rs.getString("name");
+//                int stock = rs.getInt("stock");
+//                boolean disponible = rs.getBoolean("disponible");
+//                Amount precio = new Amount(rs.getDouble("precio"));
+//                product = new Product(id, name, disponible, stock, precio);
+//                products.put(id, product);
+//            }
+//        } catch (SQLException ex) {
+//            //ex.printStackTrace(System.out);
+//            throw new Read_SQL_DAO_Excep("Can not read from database (DAO_COntroller.DAOSQL.read)");
+//        } finally {
+//            try {
+//                rs.close();
+//                instruction.close();
+//                disconnect(conn);
+//            } catch (SQLException ex) {
+//                //ex.printStackTrace(System.out);
+//                throw new Read_SQL_DAO_Excep("Can not close database read process (DAO_COntroller.DAOSQL.read)");
+//            }
+//        }
+//        return products;
+//    }
 
     @Override
-    public int insert(Product product) throws DAO_Excep {
+    public int insert(Integer n,Product product) throws DAO_Excep {
         Connection conn = null;
         //La clase PreparedStatement también permite ejecutar sentencias SQL
         //pero con mayor flexibilidad

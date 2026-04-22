@@ -5,13 +5,14 @@
 package vista;
 
 import Controler.Shop;
-import static Controler.Shop.cargarInventario;
+import Exception.DAO_Excep;
 import Exception.ProductExepcion;
 import Exception.ProductExepcion;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import model.Amount;
 import static model.Ficheros.LecturaFichero;
+import model.Product;
 /**
  *si a
  * @author Estudio-Trabajo
@@ -169,26 +170,31 @@ public class ProductView extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         String producto = NombreProducto.getText();
+                boolean aviable =true;
+                int stock = Integer.parseInt(StockProducto.getText());
+                Amount price = new Amount(Double.parseDouble(PrecioProducto.getText()));
+                int id =1;
+                Product p = new Product(id, producto, aviable, stock, price);
         try {
             if (opcion == 2) {
-
-                int stock = Integer.parseInt(StockProducto.getText());
-                double precio = Double.parseDouble(PrecioProducto.getText());
-                shop.addProduct(producto, stock, precio);
+                
+                shop.addProduct(id,p);
+                id++;
                 JOptionPane.showMessageDialog(this, "Producto añadido correctamente", "Addproduct", JOptionPane.INFORMATION_MESSAGE);
+                
                 this.dispose();
                
 
             } else if (opcion == 3) {
 
-                int stock = Integer.parseInt(StockProducto.getText());
-                shop.addStock(producto, stock);
+                int upStock = Integer.parseInt(StockProducto.getText());
+                shop.addStock(p, stock);
                 JOptionPane.showMessageDialog(this, "Stock modificado correctamente", "Correcto", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
                 
             } else if (opcion == 9) {
 
-                shop.deleteProduct(producto);
+                shop.deleteProduct(p);
                 JOptionPane.showMessageDialog(this, "Producto eliminado", "Correcto", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
             }
@@ -198,6 +204,9 @@ public class ProductView extends javax.swing.JFrame {
         } catch (ProductExepcion e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
             limpiarCampos();
+        }catch (DAO_Excep e){
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            
         }
 
  

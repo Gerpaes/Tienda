@@ -26,11 +26,14 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="DeleteProduct" min="-2" pref="147" max="-2" attributes="0"/>
                   <Component id="AddStock" min="-2" pref="147" max="-2" attributes="0"/>
                   <Component id="AddProduct" min="-2" pref="147" max="-2" attributes="0"/>
                   <Component id="TituSelec" min="-2" pref="169" max="-2" attributes="0"/>
                   <Component id="Caja" min="-2" pref="147" max="-2" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="VerProducto" alignment="0" max="32767" attributes="0"/>
+                      <Component id="DeleteProduct" alignment="0" pref="147" max="32767" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace pref="201" max="32767" attributes="0"/>
           </Group>
@@ -49,7 +52,9 @@
               <Component id="AddStock" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="DeleteProduct" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="115" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="VerProducto" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="74" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -90,6 +95,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DeleteProductActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="VerProducto">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="4.Ver Productos"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="VerProductoActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

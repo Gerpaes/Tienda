@@ -11,6 +11,12 @@ public class Product {
 
     static double EXPIRATION_RATE = 0.60;
 
+    public Product(String name) {
+        this.name = name;
+    }
+    
+    
+
     public Product(String name, Amount wholesalerPrice, boolean available, int stock) {
         this.id = ++totalProducts;
         this.name = name;
@@ -98,7 +104,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product{" + "id=" + id + ", name=" + name + ", publicPrice=" + publicPrice + ", wholesalerPrice=" + wholesalerPrice + ", available=" + available + ", stock=" + stock + '}';
+        return "Product " + id + " "+  name +" "+ available +" " + publicPrice + " "  +  stock + '\n';
     }
 
    

@@ -17,9 +17,9 @@ public interface IDAO {
         
     public abstract HashMap<Integer,Product> read (Product product)throws DAO_Excep;
     
-    public abstract HashMap<Integer,Product> readByDisponible (Product product)throws DAO_Excep;
+//    public abstract HashMap<Integer,Product> readByDisponible (Product product)throws DAO_Excep;
     
-    public abstract int insert(Product product) throws DAO_Excep;
+    public abstract int insert(Integer n, Product product) throws DAO_Excep;
     
     public abstract int update (Product product) throws DAO_Excep;
           

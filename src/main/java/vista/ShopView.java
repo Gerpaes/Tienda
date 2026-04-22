@@ -46,6 +46,7 @@ public class ShopView extends javax.swing.JFrame {
         AddProduct = new javax.swing.JButton();
         AddStock = new javax.swing.JButton();
         DeleteProduct = new javax.swing.JButton();
+        VerProducto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -79,6 +80,13 @@ public class ShopView extends javax.swing.JFrame {
             }
         });
 
+        VerProducto.setText("4.Ver Productos");
+        VerProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                VerProductoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -86,11 +94,13 @@ public class ShopView extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(DeleteProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(AddStock, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(AddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(TituSelec, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Caja, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Caja, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(VerProducto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(DeleteProduct, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)))
                 .addContainerGap(201, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -106,7 +116,9 @@ public class ShopView extends javax.swing.JFrame {
                 .addComponent(AddStock)
                 .addGap(18, 18, 18)
                 .addComponent(DeleteProduct)
-                .addContainerGap(115, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(VerProducto)
+                .addContainerGap(74, Short.MAX_VALUE))
         );
 
         pack();
@@ -149,6 +161,14 @@ public class ShopView extends javax.swing.JFrame {
         abrirFormulario(9);
     }//GEN-LAST:event_DeleteProductActionPerformed
 
+    private void VerProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerProductoActionPerformed
+        // TODO add your handling code here:
+        VerProductos lista = new VerProductos(this,true,shop);
+        lista.setLocationRelativeTo(null);
+        lista.setVisible(true);
+        
+    }//GEN-LAST:event_VerProductoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -180,5 +200,6 @@ public class ShopView extends javax.swing.JFrame {
     private javax.swing.JButton Caja;
     private javax.swing.JButton DeleteProduct;
     private javax.swing.JLabel TituSelec;
+    private javax.swing.JButton VerProducto;
     // End of variables declaration//GEN-END:variables
 }
