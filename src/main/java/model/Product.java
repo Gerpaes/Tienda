@@ -32,6 +32,13 @@ public class Product {
         this.stock = stock;
         this.publicPrice = publicPrice;
     }
+    public Product( String name,boolean available, int stock, Amount publicPrice){
+        
+        this.name = name;
+        this.stock = stock;
+        this.publicPrice = publicPrice;
+        this.available = available;
+    }
     public Product(int id, String name,boolean available, int stock, Amount publicPrice){
         this.id = id;
         this.name = name;

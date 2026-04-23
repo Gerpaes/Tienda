@@ -19,7 +19,7 @@ import model.Ficheros;
 public class Shop {
 
     static private Amount cash = new Amount(100.00);
-    static private HashMap<Integer,Product> inventory;
+    static private HashMap<Integer, Product> inventory;
     static private int numberProducts;
     static private ArrayList<Sale> sales;
     static private Amount totalAmountSales = new Amount(0);
@@ -66,15 +66,15 @@ public class Shop {
         return employe.login(codigo, contraseña);
     }
 
-    public  HashMap<Integer,Product> cargarInventario() throws DAO_Excep {
+    public HashMap<Integer, Product> cargarInventario() throws DAO_Excep {
         // Aquí llamas a tu lógica de LecturaFichero
-         DAOSQL dao = new DAOSQL();
-            inventory = dao.readALL()  ;
+        DAOSQL dao = new DAOSQL();
+        inventory = dao.readALL();
 //            Ficheros.LecturaFichero(inventory);
         //inventory =dao.sql.readAll()
-        
+
         return inventory;
-        
+
     }
 
     public static void main(String[] args) throws DAO_Excep {
@@ -82,7 +82,6 @@ public class Shop {
         Shop shop = new Shop();
 
 //        shop.cargarInventario();
-
         Scanner scanner = new Scanner(System.in);
 //        initSesion();
         int opcion = 0;
@@ -117,7 +116,6 @@ public class Shop {
 //                case 3:
 //                    shop.addStock();
 //                    break;
-
                 case 4:
                     shop.setExpired();
                     break;
@@ -141,7 +139,6 @@ public class Shop {
 //                case 9:
 //                    shop.deleteProduct();
 //                    break;
-
                 case 10:
                     exit = true;
                     break;
@@ -172,26 +169,27 @@ public class Shop {
     /**
      * add a new product to inventory getting data from console
      */
-    public boolean addProduct(Integer n, Product p) throws ProductExepcion, DAO_Excep {
+    public boolean addProduct( Product p) throws  DAO_Excep {
 //        Scanner scanner = new Scanner(System.in);
 //        System.out.print("Nombre: ");
 //        String name = scanner.nextLine();
-            DAOSQL dao =  new DAOSQL();
-           
+        DAOSQL dao = new DAOSQL();
+
         Product product = findProduct(p);
         if (product == null) {
 //            System.out.print("Precio mayorista: ");
 //            double wholesalerPrice = scanner.nextDouble();
 //            System.out.print("Stock: ");
 //            int stock = scanner.nextInt();
+
+            dao.insert( p);
+            System.out.println("186s");
+
             
-            dao.insert(n, p);
-                
-               numberProducts++;
             return true;
         } else {
             System.out.println("The product alredy exist");
-            throw new ProductExepcion("El producto '" + p.getName() + "' ya existe.");
+            throw new DAO_Excep("El producto '" + p.getName() + "' ya existe.");
 
         }
     }
@@ -199,10 +197,11 @@ public class Shop {
     /**
      * add stock for a specific product
      */
-    public boolean addStock(Product p, int stock)throws ProductExepcion,DAO_Excep {
+    public boolean addStock(Product p, int stock) throws ProductExepcion, DAO_Excep {
 //        Scanner scanner = new Scanner(System.in);
 //        System.out.print("Seleccione un nombre de producto: ");
 //        String name = scanner.next();
+        DAOSQL dao = new DAOSQL();
         Product product = findProduct(p);
 
         if (product != null) {
@@ -210,20 +209,21 @@ public class Shop {
 //            System.out.print("Seleccione la cantidad a a\u00f1adir: ");
 //            int stock = scanner.nextInt();
             // update stock product
-            product.setStock(product.getStock() + stock);
-            Ficheros.EscrituraFichero(inventory);
+          product.setStock(product.getStock() + stock);
+              dao.update(product);
+//            Ficheros.EscrituraFichero(inventory);
 //            System.out.println("El stock del producto " + name + " ha sido actualizado a " + product.getStock());
             return true;
         } else {
             System.out.println("No se ha encontrado el producto con nombre " + p.getName());
-            throw new ProductExepcion("El producto no existe");
+            throw new DAO_Excep("El producto no existe");
         }
     }
 
     /**
      * set a product as expired
      */
-    private void setExpired() throws DAO_Excep{
+    private void setExpired() throws DAO_Excep {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Seleccione un nombre de producto: ");
         String name = scanner.next();
@@ -250,15 +250,15 @@ public class Shop {
         System.out.println("--------------------------------");
 
         Iterator it = inventory.keySet().iterator();
-        Product key = (Product)it.next();
+        Product key = (Product) it.next();
 
-            System.out.println(
-                    key.getName() + " | Precio: "
-                    + key.getPublicPrice().getValue() + " ?"
-                    + " | Stock: " + key.getStock()
-            );
+        System.out.println(
+                key.getName() + " | Precio: "
+                + key.getPublicPrice().getValue() + " ?"
+                + " | Stock: " + key.getStock()
+        );
 
-        }
+    }
 
 //    System.out.println("Contenido actual de la tienda:");
 //    System.out.println("--------------------------------");
@@ -275,8 +275,6 @@ public class Shop {
 //                System.out.println(product.getName() + " " + product.getPublicPrice().getValue() + " " + product.getPublicPrice().getCurrency());
 //            }
 //        }
-    
-
     /**
      * make a sale of products to a client
      */
@@ -306,12 +304,10 @@ public class Shop {
             if (name.equals("0")) {
                 break;
             }
-           
+
             Product p = new Product(name);
             Product product = findProduct(p);
             boolean productAvailable = false;
-                
-           
 
             if (product != null && product.isAvailable()) {
                 productAvailable = true;
@@ -335,10 +331,8 @@ public class Shop {
                 System.out.println("Producto no encontrado o sin stock");
             }
         }
-    
 
         // show cost total
-
         totalAmount.setValue(totalAmount.getValue() * TAX_RATE);
         cash.setValue(cash.getValue() + totalAmount.getValue());
         totalAmountSales.setValue(
@@ -400,7 +394,7 @@ public class Shop {
 //        DAOSQL dao = new DAOSQL();
 //        inventory = dao.insert(p);
 //        numberProducts++;
-////        Ficheros.EscrituraFichero(inventory);
+    ////        Ficheros.EscrituraFichero(inventory);
 //    }
 
     /**
@@ -421,45 +415,41 @@ public class Shop {
      * @param name
      * @return product found by name
      */
-    public static Product findProduct(Product p)throws DAO_Excep  {
+    public static Product findProduct(Product p) throws DAO_Excep {
         DAOSQL dao = new DAOSQL();
-        dao.read(p);
-        Iterator it = inventory.keySet().iterator();
-        
-        while(it.hasNext()){
-             Product key = (Product)it.next();
-            if (key.getName().equals(p.getName())) {
-                return key;
+        HashMap<Integer, Product> resultados =dao.read(p);
+        if(!resultados.isEmpty()){
+            System.out.println("420");
+            return resultados.values().iterator().next();
         }
-           
-            }
-            return null;
-        }
+        return null;
+       
         
-    
+    }
 
     public void showTotalAmountOfSales() {
         System.out.println(totalAmountSales.getValue() + totalAmountSales.getCurrency());
     }
 
-    public boolean deleteProduct( Product p) throws ProductExepcion, DAO_Excep{
+    public boolean deleteProduct(Product p) throws ProductExepcion, DAO_Excep {
 //        Scanner scanner = new Scanner(System.in);
 //        System.out.print("Nombre: ");
 //        String name = scanner.nextLine();
+        DAOSQL dao = new DAOSQL();
         Product product = findProduct(p);
         if (product != null) {
-            inventory.remove(product);
-            Ficheros.EscrituraFichero(inventory);
-            System.out.println("Producto eliminado correctamente");
+            
+       dao.delete(product);
+//            inventory.remove(product);
+//            Ficheros.EscrituraFichero(inventory);
+//            System.out.println("Producto eliminado correctamente");
             return true;
 
         } else {
-          
+
             System.out.println("The product not exist");
-            throw new   ProductExepcion("El producto no existe");
+            throw new ProductExepcion("El producto no existe");
 
         }
     }
 }
-
-

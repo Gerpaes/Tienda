@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Amount;
+import model.Employee;
 import model.Product;
 
 /**
@@ -29,17 +30,18 @@ public class DAOSQL implements IDAO {
 
     //Especificamos la base de Datos
     private final String JDBC_DDBB = "Tienda";
-    private final String JDBC_TABLE = "productos";
-    private final String JDBC_DDBB_TABLE = JDBC_DDBB + "." + JDBC_TABLE;
+    private final String TABLE_PRODUCTOS = JDBC_DDBB + ".productos";
+    private final String TABLE_EMPLEADOS = JDBC_DDBB + ".emplados";
+//    private final String JDBC_DDBB_TABLE = JDBC_DDBB + "." + JDBC_TABLE;
 
     //Variables para las consultas SQL
-    private final String SQL_SELECT_ALL = "SELECT * FROM " + JDBC_DDBB_TABLE + ";";
-    private final String SQL_SELECT = "SELECT * FROM " + JDBC_DDBB_TABLE + " WHERE (name = ";
-    private final String SQL_SELECT2 = "SELECT * FROM " + JDBC_DDBB_TABLE + " WHERE (disponible = ";
-    private final String SQL_INSERT = "INSERT INTO " + JDBC_DDBB_TABLE + " (name, disponible, stock, precio) VALUES (?, ?, ?, ?)";
-    private final String SQL_UPDATE = "UPDATE " + JDBC_DDBB_TABLE + " SET stock = ?, disponible = ?, precio = ? WHERE name = ?";
-    private final String SQL_DELETE = "DELETE FROM " + JDBC_DDBB_TABLE + " WHERE (name = ";
-    private final String SQL_DELETE_ALL = "DELETE FROM " + JDBC_DDBB_TABLE + ";";
+    private final String SQL_SELECT_ALL = "SELECT * FROM " + TABLE_PRODUCTOS + ";";
+    private final String SQL_SELECT = "SELECT * FROM " + TABLE_PRODUCTOS + " WHERE name = ?";
+    private final String SQL_SELECT2 = "SELECT * FROM " + TABLE_EMPLEADOS + " WHERE (id = ";
+    private final String SQL_INSERT = "INSERT INTO " + TABLE_PRODUCTOS+ " (name, disponible, stock, precio) VALUES (?, ?, ?, ?)";
+    private final String SQL_UPDATE_STOCK = "UPDATE " + TABLE_PRODUCTOS+  " SET stock = ? WHERE name = ?";
+    private final String SQL_DELETE = "DELETE FROM " + TABLE_EMPLEADOS + " WHERE name = ?";
+    private final String SQL_DELETE_ALL = "DELETE FROM " + TABLE_PRODUCTOS+ ";";
 //    private final String SQL_RESET_AGES = "UPDATE " + JDBC_DDBB_TABLE + " SET age = 0 WHERE (name = ?);";
 
     public Connection connect() throws DAO_Excep {
@@ -73,7 +75,7 @@ public class DAOSQL implements IDAO {
     }
 
     private void createTable(Connection conn) throws SQLException {
-        String query = "create table if not exists " + JDBC_DDBB + "." + JDBC_TABLE + "("
+        String query = "create table if not exists " + JDBC_DDBB + "." + TABLE_PRODUCTOS + "("
                 + "id Bigint primary key auto_increment, "
                 + "name varchar(70) unique, "
                 + "disponible boolean, "
@@ -82,7 +84,7 @@ public class DAOSQL implements IDAO {
         Statement stmt = null;
         stmt = conn.createStatement();
         stmt.executeUpdate(query);
-        
+
         //Liberamos los recursos de la comunicación  
 //        PreparedStatement test = conn.prepareStatement(SQL_INSERT);
 //        test.setString(1, "manzana");
@@ -97,9 +99,22 @@ public class DAOSQL implements IDAO {
 //        test.setInt(3, 5);
 //        test.setDouble(4, 15.5);
 //        test.addBatch();
-
         // Ejecutamos el lote
 //        test.executeBatch();
+        stmt.close();
+    }
+
+    private void createTableEmployee(Connection conn) throws SQLException {
+        String query = "create table if not exists " + JDBC_DDBB + "." + TABLE_PRODUCTOS + "("
+                + "id Bigint primary key auto_increment, "
+                + "name varchar(70) unique, "
+                + "disponible boolean, "
+                + "stock int,"
+                + "precio double);";
+        Statement stmt = null;
+        stmt = conn.createStatement();
+        stmt.executeUpdate(query);
+
         stmt.close();
     }
 
@@ -135,7 +150,7 @@ public class DAOSQL implements IDAO {
             }
         } catch (SQLException ex) {
             //ex.printStackTrace(System.out);
-            throw new Read_SQL_DAO_Excep("Can not read from database - readAll");
+            throw new DAO_Excep("Can not read from database - readAll");
         } finally {
             try {
                 rs.close();
@@ -143,7 +158,7 @@ public class DAOSQL implements IDAO {
                 disconnect(conn);
             } catch (SQLException ex) {
                 //ex.printStackTrace(System.out);
-                throw new Read_SQL_DAO_Excep("Can not read from database - readAll");
+                throw new DAO_Excep("Can not read from database - readAll");
             }
         }
         return products;
@@ -154,13 +169,14 @@ public class DAOSQL implements IDAO {
         HashMap<Integer, Product> products = new HashMap<Integer, Product>();
         Product product = null;
         Connection conn = null;
-        Statement instruction = null;
+        PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             conn = connect();
-            String query = SQL_SELECT + "'" + p.getName() + "'" + ");";
-            instruction = conn.createStatement();
-            rs = instruction.executeQuery(query);
+            ps = conn.prepareStatement(SQL_SELECT);
+            ps.setString(1, p.getName());
+            rs = ps.executeQuery();
+
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
@@ -172,22 +188,29 @@ public class DAOSQL implements IDAO {
             }
         } catch (SQLException ex) {
             //ex.printStackTrace(System.out);
-            throw new Read_SQL_DAO_Excep("Can not read from database (DAO_COntroller.DAOSQL.read)");
+            throw new DAO_Excep("Can not read from database (DAO_COntroller.DAOSQL.read)");
         } finally {
             try {
-                rs.close();
-                instruction.close();
-                disconnect(conn);
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    disconnect(conn);
+                }
+
             } catch (SQLException ex) {
                 //ex.printStackTrace(System.out);
-                throw new Read_SQL_DAO_Excep("Can not close database read process (DAO_COntroller.DAOSQL.read)");
+                throw new DAO_Excep("Can not close database read process (DAO_COntroller.DAOSQL.read)");
             }
         }
         return products;
     }
 
 //    @Override
-//    public HashMap<Integer, Product> readByDisponible(Product p) throws DAO_Excep {
+//    public HashMap<Integer, Product> readByName(Product p) throws DAO_Excep {
 //        HashMap<Integer, Product> products = new HashMap<Integer, Product>();
 //        Product product = null;
 //        Connection conn = null;
@@ -195,7 +218,7 @@ public class DAOSQL implements IDAO {
 //        ResultSet rs = null;
 //        try {
 //            conn = connect();
-//            String query = SQL_SELECT2 + "'" + p.isAvailable() + "'" + ");";
+//            String query = SQL_SELECT2 + "'" + p.getname + "'" + ");";
 //            System.out.println(query);
 //            instruction = conn.createStatement();
 //            rs = instruction.executeQuery(query);
@@ -223,15 +246,15 @@ public class DAOSQL implements IDAO {
 //        }
 //        return products;
 //    }
-
     @Override
-    public int insert(Integer n,Product product) throws DAO_Excep {
+    public int insert(Product product) throws DAO_Excep {
         Connection conn = null;
         //La clase PreparedStatement también permite ejecutar sentencias SQL
         //pero con mayor flexibilidad
         PreparedStatement instruction = null;
         int registers = 0;
         try {
+            System.out.println("237i");
             conn = connect();
             instruction = conn.prepareStatement(SQL_INSERT);
             instruction.setString(1, product.getName());
@@ -239,15 +262,16 @@ public class DAOSQL implements IDAO {
             instruction.setInt(3, product.getStock());
             instruction.setDouble(4, product.getPublicPrice().getValue());
             registers = instruction.executeUpdate();
+            System.out.println("245i");
         } catch (SQLException ex) {
-            throw new Write_SQL_DAO_Excep("Can not write to database (DAO_COntroller.DAOSQL.insert)");
+            throw new DAO_Excep("Can not write to database (DAO_COntroller.DAOSQL.insert)");
         } finally {
             try {
                 instruction.close();
                 disconnect(conn);
             } catch (SQLException ex) {
                 //ex.printStackTrace(System.out);
-                throw new Write_SQL_DAO_Excep("Can not close database write process (DAO_COntroller.DAOSQL.insert)");
+                throw new DAO_Excep("Can not close database write process (DAO_COntroller.DAOSQL.insert)");
             }
         }
         //Devolvemos la cantidad de registros afectados, en nuestro caso siempre uno
@@ -255,62 +279,74 @@ public class DAOSQL implements IDAO {
     }
 
     @Override
-    public int update(Product product) throws DAO_Excep {
+    public boolean update(Product product) throws DAO_Excep {
         Connection conn = null;
         PreparedStatement instruction = null;
-        int registers = 0;
+        boolean actualizado = false;
         try {
             conn = connect();
-            instruction = conn.prepareStatement(SQL_UPDATE);
+            instruction = conn.prepareStatement(SQL_UPDATE_STOCK);
             instruction.setInt(1, product.getStock());
-            instruction.setBoolean(2, product.isAvailable());
-            instruction.setDouble(3, product.getPublicPrice().getValue());
-            instruction.setString(4, product.getName());
 
-            //cada vez que modificamos una base de datos llamamos a executeUpdate()
-            registers = instruction.executeUpdate();
+            instruction.setString(2, product.getName());
+            int filasAfec = instruction.executeUpdate();
+            if (filasAfec > 0) {
+                actualizado = true;
+            }
+
         } catch (SQLException ex) {
             //ex.printStackTrace(System.out);
-            throw new Write_SQL_DAO_Excep("Can not write to database (DAO_COntroller.DAOSQL.update)");
+            throw new DAO_Excep("Can not write to database (DAO_COntroller.DAOSQL.update)");
         } finally {
             try {
-                instruction.close();
-                disconnect(conn);
+                if (instruction != null) {
+                    instruction.close();
+                }
+                if (conn != null) {
+                    disconnect(conn);
+                }
             } catch (SQLException ex) {
                 //ex.printStackTrace(System.out);
-                throw new Write_SQL_DAO_Excep("Can not close database write process (DAO_COntroller.DAOSQL.update)");
+                throw new DAO_Excep("Can not close database write process (DAO_COntroller.DAOSQL.update)");
             }
         }
         //Devolvemos la cantidad de registros afectados
-        return registers;
+        return actualizado;
     }
 
     @Override
-    public int delete(Product product) throws DAO_Excep {
+    public boolean delete(Product product) throws DAO_Excep {
         Connection conn = null;
-        PreparedStatement instruccion = null;
-        int registers = 0;
+        PreparedStatement ps = null;
+        boolean actualizado = false;
         try {
             conn = connect();
-            String query = SQL_DELETE + "'" + product.getName() + "'" + ");";
-            instruccion = conn.prepareStatement(query);
+            ps = conn.prepareStatement(SQL_DELETE);
+            ps.setString(1, product.getName());
             //cada vez que modificamos una base de datos llamamos a executeUpdate()
-            registers = instruccion.executeUpdate();
+            int registers = ps.executeUpdate();
+            if (registers > 0) {
+                actualizado = true;
+            }
         } catch (SQLException ex) {
             //ex.printStackTrace(System.out);
-            throw new Write_SQL_DAO_Excep("Can not write to database (DAO_Controller.DAOSQL.delete)");
+            throw new DAO_Excep("Can not write to database (DAO_Controller.DAOSQL.delete)");
 
         } finally {
             try {
-                instruccion.close();
-                disconnect(conn);
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    disconnect(conn);
+                }
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);
-                throw new Write_SQL_DAO_Excep("Can not close database write process (DAO_COntroller.DAOSQL.delete)");
+                throw new DAO_Excep("Can not close database write process (DAO_COntroller.DAOSQL.delete)");
             }
         }
         //Devolvemos la cantidad de registros afectados
-        return registers;
+        return actualizado;
     }
 
     @Override
@@ -325,14 +361,14 @@ public class DAOSQL implements IDAO {
             registers = instruccion.executeUpdate();
         } catch (SQLException ex) {
             //ex.printStackTrace(System.out);
-            throw new Write_SQL_DAO_Excep("Can not write to database (DAO_Controller.DAOSQL.deleteAll)");
+            throw new DAO_Excep("Can not write to database (DAO_Controller.DAOSQL.deleteAll)");
         } finally {
             try {
                 instruccion.close();
                 disconnect(conn);
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);
-                throw new Write_SQL_DAO_Excep("Can not close database write process (DAO_COntroller.DAOSQL.deleteAll)");
+                throw new DAO_Excep("Can not close database write process (DAO_COntroller.DAOSQL.deleteAll)");
             }
         }
         //Devolvemos la cantidad de registros afectados
@@ -358,7 +394,7 @@ public class DAOSQL implements IDAO {
 //                    registers += instruction.executeUpdate();
 //                    //Activar para comprobar el funcionamiento del rollback
 //                    //Debe haber más de un estudiante en la Base de datos (*)
-////                    throw new SQLException();
+    ////                    throw new SQLException();
 //                }
 //            }
 //        } catch (SQLException ex) {
@@ -384,5 +420,20 @@ public class DAOSQL implements IDAO {
 //        //Devolvemos la cantidad de registros afectados
 //        return registers;
 //    }
+    @Override
+    public void login() throws DAO_Excep {
+
+    }
+
+    @Override
+    public void logout() throws DAO_Excep {
+
+    }
+
+    @Override
+    public Employee getEmployeeId(int employeeid, String password) throws DAO_Excep {
+        Employee empl = null;
+        return empl;
+    }
 
 }

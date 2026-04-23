@@ -170,30 +170,31 @@ public class ProductView extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         String producto = NombreProducto.getText();
-                boolean aviable =true;
-                int stock = Integer.parseInt(StockProducto.getText());
-                Amount price = new Amount(Double.parseDouble(PrecioProducto.getText()));
-                int id =1;
-                Product p = new Product(id, producto, aviable, stock, price);
         try {
             if (opcion == 2) {
                 
-                shop.addProduct(id,p);
-                id++;
+                boolean aviable =true;
+                int stock = Integer.parseInt(StockProducto.getText());
+                Amount price = new Amount(Double.parseDouble(PrecioProducto.getText()));
+                Product p = new Product( producto, aviable, stock, price);
+               shop.addProduct(p);
+                System.out.println("181");
                 JOptionPane.showMessageDialog(this, "Producto añadido correctamente", "Addproduct", JOptionPane.INFORMATION_MESSAGE);
                 
                 this.dispose();
                
 
             } else if (opcion == 3) {
+                Product p = new Product(producto);
+            
 
                 int upStock = Integer.parseInt(StockProducto.getText());
-                shop.addStock(p, stock);
+                shop.addStock(p, upStock);
                 JOptionPane.showMessageDialog(this, "Stock modificado correctamente", "Correcto", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
                 
             } else if (opcion == 9) {
-
+                Product p = new Product(producto);
                 shop.deleteProduct(p);
                 JOptionPane.showMessageDialog(this, "Producto eliminado", "Correcto", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
@@ -209,7 +210,7 @@ public class ProductView extends javax.swing.JFrame {
             
         }
 
- 
+        limpiarCampos();
         
     }//GEN-LAST:event_ActionActionPerformed
 
