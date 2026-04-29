@@ -28,12 +28,12 @@ public interface IDAO {
     
     public abstract int deleteALL () throws DAO_Excep;
     
-    public abstract void login() throws DAO_Excep;
-    
-    public abstract void logout() throws DAO_Excep;
-    
-    public abstract Employee getEmployeeId(int employeeid, String password) throws DAO_Excep;
-    
+//    public abstract void login() throws DAO_Excep;
+//    
+//    public abstract void logout() throws DAO_Excep;
+//    
+//    public abstract Employee getEmployeeId(int employeeid, String password) throws DAO_Excep;
+//    
     
 //    public abstract int resetAges() throws DAO_Excep;
     

@@ -45,6 +45,7 @@ public class Product {
         this.stock = stock;
         this.publicPrice = publicPrice;
         this.available = available;
+        this.wholesalerPrice = new Amount(publicPrice.getValue() / 2);
     }
 
     public int getId() {
@@ -111,7 +112,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product " + id + " "+  name +" "+ available +" " + publicPrice + " "  +  stock + '\n';
+        return "Product " + id + " - "+  name +" - "+ available +" - " + publicPrice + " - " +  stock + " - " +wholesalerPrice +'\n';
     }
 
    

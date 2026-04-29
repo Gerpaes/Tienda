@@ -28,6 +28,9 @@ public class VerProductos extends javax.swing.JDialog {
         try {
             
         lista.setText(shop.cargarInventario().toString());
+        
+//            System.out.println(shop.cargarInventario().values().toString());
+        
         } catch (DAO_Excep e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }

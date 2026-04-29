@@ -23,25 +23,25 @@ import model.Product;
 public class DAOSQL implements IDAO {
 
     //Variables para la conexión segura contra el servidor (sin especificar DDBB)
-    private final String JDBC_URL = "jdbc:mysql://localhost:3306";
+    private final String JDBC_URL = "jdbc:mysql://localhost:3306/";
     private final String JDBC_COMMU_OPT = "?useSSL=false&useTimezone=true&serverTimezone=UTC&allowPublicKeyRetrieval=true";
     private final String JDBC_USER = "root";
     private final String JDBC_PASSWORD = "";
 
     //Especificamos la base de Datos
     private final String JDBC_DDBB = "Tienda";
-    private final String TABLE_PRODUCTOS = JDBC_DDBB + ".productos";
-    private final String TABLE_EMPLEADOS = JDBC_DDBB + ".emplados";
-//    private final String JDBC_DDBB_TABLE = JDBC_DDBB + "." + JDBC_TABLE;
+    private final String JDBC_TABLE =  "productos";
+//    private final String TABLE_EMPLEADOS = JDBC_DDBB + ".emplados";
+    private final String JDBC_DDBB_TABLE = JDBC_DDBB + "." + JDBC_TABLE;
 
     //Variables para las consultas SQL
-    private final String SQL_SELECT_ALL = "SELECT * FROM " + TABLE_PRODUCTOS + ";";
-    private final String SQL_SELECT = "SELECT * FROM " + TABLE_PRODUCTOS + " WHERE name = ?";
-    private final String SQL_SELECT2 = "SELECT * FROM " + TABLE_EMPLEADOS + " WHERE (id = ";
-    private final String SQL_INSERT = "INSERT INTO " + TABLE_PRODUCTOS+ " (name, disponible, stock, precio) VALUES (?, ?, ?, ?)";
-    private final String SQL_UPDATE_STOCK = "UPDATE " + TABLE_PRODUCTOS+  " SET stock = ? WHERE name = ?";
-    private final String SQL_DELETE = "DELETE FROM " + TABLE_EMPLEADOS + " WHERE name = ?";
-    private final String SQL_DELETE_ALL = "DELETE FROM " + TABLE_PRODUCTOS+ ";";
+    private final String SQL_SELECT_ALL = "SELECT * FROM " + JDBC_DDBB_TABLE + ";";
+    private final String SQL_SELECT = "SELECT * FROM " + JDBC_DDBB_TABLE + " WHERE name = ?";
+    private final String SQL_SELECT2 = "SELECT * FROM " + JDBC_DDBB_TABLE + " WHERE (id = ";
+    private final String SQL_INSERT = "INSERT INTO " + JDBC_DDBB_TABLE+ " (name, disponible, stock, precio) VALUES (?, ?, ?, ?)";
+    private final String SQL_UPDATE_STOCK = "UPDATE " + JDBC_DDBB_TABLE+  " SET stock = ? WHERE name = ?";
+    private final String SQL_DELETE = "DELETE FROM " + JDBC_DDBB_TABLE + " WHERE name = ?";
+    private final String SQL_DELETE_ALL = "DELETE FROM " + JDBC_DDBB_TABLE+ ";";
 //    private final String SQL_RESET_AGES = "UPDATE " + JDBC_DDBB_TABLE + " SET age = 0 WHERE (name = ?);";
 
     public Connection connect() throws DAO_Excep {
@@ -75,7 +75,7 @@ public class DAOSQL implements IDAO {
     }
 
     private void createTable(Connection conn) throws SQLException {
-        String query = "create table if not exists " + JDBC_DDBB + "." + TABLE_PRODUCTOS + "("
+        String query = "create table if not exists " + JDBC_DDBB + "." + JDBC_TABLE + "("
                 + "id Bigint primary key auto_increment, "
                 + "name varchar(70) unique, "
                 + "disponible boolean, "
@@ -104,19 +104,19 @@ public class DAOSQL implements IDAO {
         stmt.close();
     }
 
-    private void createTableEmployee(Connection conn) throws SQLException {
-        String query = "create table if not exists " + JDBC_DDBB + "." + TABLE_PRODUCTOS + "("
-                + "id Bigint primary key auto_increment, "
-                + "name varchar(70) unique, "
-                + "disponible boolean, "
-                + "stock int,"
-                + "precio double);";
-        Statement stmt = null;
-        stmt = conn.createStatement();
-        stmt.executeUpdate(query);
-
-        stmt.close();
-    }
+//    private void createTableEmployee(Connection conn) throws SQLException {
+//        String query = "create table if not exists " + JDBC_DDBB + "." + TABLE_PRODUCTOS + "("
+//                + "id Bigint primary key auto_increment, "
+//                + "name varchar(70) unique, "
+//                + "disponible boolean, "
+//                + "stock int,"
+//                + "precio double);";
+//        Statement stmt = null;
+//        stmt = conn.createStatement();
+//        stmt.executeUpdate(query);
+//
+//        stmt.close();
+//    }
 
     public void disconnect(Connection conn) throws DAO_Excep {
         if (conn != null) {
@@ -420,20 +420,21 @@ public class DAOSQL implements IDAO {
 //        //Devolvemos la cantidad de registros afectados
 //        return registers;
 //    }
-    @Override
-    public void login() throws DAO_Excep {
-
-    }
-
-    @Override
-    public void logout() throws DAO_Excep {
-
-    }
-
-    @Override
-    public Employee getEmployeeId(int employeeid, String password) throws DAO_Excep {
-        Employee empl = null;
-        return empl;
-    }
+//    @Override
+//    public void login() throws DAO_Excep {
+//        
+//
+//    }
+//
+//    @Override
+//    public void logout() throws DAO_Excep {
+//
+//    }
+//
+//    @Override
+//    public Employee getEmployeeId(int employeeid, String password) throws DAO_Excep {
+//        Employee empl = null;
+//        return empl;
+//    }
 
 }
